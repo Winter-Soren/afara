@@ -23,6 +23,7 @@ export const GetQuoteForFileUpload = async (req: Request, res: Response) => {
     })
     return res.status(200).json({
       quote: QuoteObject,
+      ...(chain === 'base' ? {network: process.env.X402_NETWORK === 'mainnet' ? 'eip155:8453' : 'eip155:84532', asset: process.env.X402_NETWORK === 'mainnet' ? '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' : '0x036CbD53842c5426634e7929541eC2318f3dCF7e', payTo: process.env.BASE_USDC_WALLET} : {}),
       success: true,
     })
   } catch (err) {

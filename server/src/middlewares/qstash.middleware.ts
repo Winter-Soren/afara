@@ -32,7 +32,7 @@ export const verifyQStashRequest = async (
     // upstash scheduled requests have empty body (optional while setting up)
     // if body is empty object, we should use it as (an empty string) for verification
     const body =
-      Object.keys(req.body).length === 0 ? '' : JSON.stringify(req.body)
+      Object.keys(req.body || {}).length === 0 ? '' : JSON.stringify(req.body)
 
     // Verify the signature - SDK will throw if signature is missing or invalid
     const isValid = await receiver.verify({

@@ -84,7 +84,7 @@ const requestLogFormat: FormatFn<Request, Response> = (tokens, req, res) => {
 }
 
 app.use(morgan(requestLogFormat, { stream: logger.stream }))
-app.use(apiLimiter)
+app.use((req, res, next) => req.path === '/health/live' ? next() : apiLimiter(req, res, next))
 
 app.use('/console', consoleRouter)
 app.use('/upload', uploadsRouter)

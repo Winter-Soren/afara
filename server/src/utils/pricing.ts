@@ -1,3 +1,4 @@
+import { priceUSDC } from './agent-payment.js'
 import { db } from '../db/db.js'
 import { configTable } from '../db/schema.js'
 import { getSolPrice } from '../services/price/sol-price.service.js'
@@ -27,6 +28,8 @@ export const getQuoteForFileUpload = async ({
   const effectiveDuration = Math.max(durationInUnits, MINIMUM_DURATION_UNIT)
 
   let totalCost: number
+
+  if (chain === 'base') return { ...priceUSDC(sizeInBytes, durationInUnits, RATE_PER_BYTE_PER_UNIT, MINIMUM_DURATION_UNIT), ratePerBytePerDay: RATE_PER_BYTE_PER_UNIT }
 
   if (chain === 'fil') {
     totalCost = getAmountInUSD(

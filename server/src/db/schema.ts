@@ -21,6 +21,8 @@ export const configTable = pgTable('config', {
 
 export const uploads = pgTable('uploads', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  agentExportId: varchar('agent_export_id', { length: 36 }),
+  artifactSha256: varchar('artifact_sha256', { length: 64 }),
   depositKey: varchar('deposit_key', { length: 44 }).notNull(),
   contentCid: text('content_cid').notNull(),
   durationDays: integer('duration_days').notNull(),

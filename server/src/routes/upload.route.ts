@@ -5,12 +5,13 @@ import * as uploadsController from '../controllers/upload.controller.js'
 import { uploadLimiter } from '../middlewares/rate-limit.middleware.js'
 import { agentPaymentMiddleware } from '../middlewares/x402.middleware.js'
 
-const upload = multer()
+import { validateAgentFile } from '../utils/agent-payment.js'
+
+const upload = multer({limits:{fileSize:10*1024*1024,files:20}})
 
 export const uploadsRouter = express.Router()
 
-// x402 payment gate — applies only to POST /agent, passes through all other routes
-if (agentPaymentMiddleware) uploadsRouter.use(agentPaymentMiddleware)
+
 
 uploadsRouter.post(
   '/deposit',
@@ -41,5 +42,9 @@ uploadsRouter.post('/fil/verify-payment', uploadsController.verifyUsdFcPayment)
 uploadsRouter.post(
   '/agent',
   upload.single('file'),
+  (req, res, next) => { try { validateAgentFile(req.file, req.query); next() } catch (error) { res.status(400).json({message:error instanceof Error?error.message:'Invalid artifact'}) } },
+  agentPaymentMiddleware,
   agentController.uploadAgentFile,
 )
+
+uploadsRouter.get('/agent/receipt/:id', agentController.getAgentReceipt)

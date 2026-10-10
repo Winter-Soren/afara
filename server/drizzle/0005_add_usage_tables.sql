@@ -8,6 +8,7 @@ CREATE TABLE "usage" (
 	"utilization_percentage" real,
 	"created_at" date DEFAULT now() NOT NULL
 );
+--> statement-breakpoint
 
 CREATE TABLE "usage_comparison" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "usage_comparison_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
@@ -20,6 +21,7 @@ CREATE TABLE "usage_comparison" (
 	"notes" text,
 	"created_at" date DEFAULT now() NOT NULL
 );
+--> statement-breakpoint
 
 CREATE TABLE "usage_alerts" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "usage_alerts_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
@@ -32,3 +34,4 @@ CREATE TABLE "usage_alerts" (
 	"resolved" date,
 	"created_at" date DEFAULT now() NOT NULL
 );
+--> statement-breakpoint

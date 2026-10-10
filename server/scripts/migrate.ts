@@ -66,21 +66,11 @@ const main = async () => {
         .map((s) => s.trim())
         .filter((s) => s.length > 0)
 
-      for (const statement of statements) {
-        try {
-          await sql.unsafe(statement)
-        } catch (error) {
-          console.error(`❌ Error executing statement in ${migrationName}:`)
-          console.error(statement)
-          throw error
-        }
-      }
-
-      // mark as applied
-      await sql`
-        INSERT INTO __drizzle_migrations (hash, created_at)
-        VALUES (${migrationName}, ${Date.now()});
-      `
+      // Execute SQL and its bookkeeping atomically; unsafe() only builds a fragment.
+      await sql.transaction([
+        ...statements.map((statement) => sql.query(statement)),
+        sql`INSERT INTO __drizzle_migrations (hash, created_at) VALUES (${migrationName}, ${Date.now()})`,
+      ])
 
       console.log(`✅ Applied ${migrationName}`)
       appliedCount++

@@ -52,7 +52,7 @@ async function seedConfig() {
     await db.insert(configTable).values({
       id: 1,
       adminKey: adminPublicKey,
-      ratePerBytePerDay: 3000000000.0, // 0.000000000003 USD rate (explicit float)
+      ratePerBytePerDay: 0.000000000003, // 0.000000000003 USD rate (explicit float)
       minDurationDays: 7,
       withdrawalWallet: withdrawalWallet,
     })
