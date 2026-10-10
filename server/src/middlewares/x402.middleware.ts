@@ -17,6 +17,11 @@ let agentPaymentMiddleware: RequestHandler = (_req, res) => { res.status(503).js
 if (payTo && /^0x[0-9a-fA-F]{40}$/.test(payTo)) {
   const facilitator = new HTTPFacilitatorClient(isMainnet ? cdpFacilitator : {url:'https://x402.org/facilitator'})
   const server = new x402ResourceServer(facilitator).register(network, new ExactEvmScheme())
+  server.onSettleFailure(async ({error}) => {
+    const failure = error as Error & {errorReason?: string; statusCode?: number}
+    const reason = /^[a-z0-9_:-]{1,100}$/i.test(failure.errorReason || '') ? failure.errorReason : 'unclassified'
+    logger.error('Agent payment settlement failed', {network, reason, statusCode:failure.statusCode, errorType:error.name})
+  })
   server.onAfterSettle(async ({result, transportContext}) => {
     if (!result.success || !/^0x[0-9a-fA-F]{64}$/.test(result.transaction)) return
     const context = transportContext as {responseBody?: Buffer}
